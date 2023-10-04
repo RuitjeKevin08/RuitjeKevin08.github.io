@@ -1,0 +1,21 @@
+/* Stijl voor de menubalk */
+.menu-bar {
+  background-color: #333; /* Achtergrondkleur van de menubalk */
+  overflow: hidden;
+}
+
+/* Stijl voor de menulinks */
+.menu-bar a {
+  float: left; /* Zorgt ervoor dat de menu-items naast elkaar worden weergegeven */
+  display: block; /* Maakt de links blok-elementen, zodat ze de volledige breedte van de menubalk innemen */
+  color: #fff; /* Tekstkleur */
+  text-align: center; /* Centreren van de tekst in de links */
+  padding: 14px 16px; /* Binnenafstand (boven/onder en links/rechts) van de links */
+  text-decoration: none; /* Verwijder onderstreping van de links */
+}
+
+/* Stijl voor de menulinks bij hover (wanneer de muis erover beweegt) */
+.menu-bar a:hover {
+  background-color: #555; /* Achtergrondkleur wijzigen bij hover */
+  color: #fff; /* Tekstkleur wijzigen bij hover */
+}
