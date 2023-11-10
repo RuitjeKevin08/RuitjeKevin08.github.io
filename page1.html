@@ -1,74 +1,196 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="opmaak.css">
-    <title>Welcome to the World of Games</title>
+    <title>Griepepidemie Simulatie</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
+            background-color: #F6F7D7;
         }
-        header {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 20px 0;
+        canvas {
+            border: 10px solid #C9E8C2;
         }
-        h1 {
-            font-size: 36px;
+        
+        #infectionText {
+            background-color: #F6F7D7;
+            padding: 10px;
+            margin-top: 20px;
         }
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
+        
+        #infectionText2 {
+            background-color: #F6F7D7;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        #totalInfectionsText {
             background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-        p {
-            font-size: 18px;
-            line-height: 1.6;
-        }
-        .game-list {
-            list-style: none;
-            padding: 0;
-        }
-        .game-list li {
-            margin-bottom: 10px;
+            padding: 10px;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-        <ul>
-            <li><a href="page1.html">Home</a></li>
-            <li><a href="page2.html">FPS games</a></li>
-            <li><a href="page3.html">PC games</a></li>
-            <li><a href="page4.html">Mobile games</a></li>
-            <li><a href="page5.html">Consoles</a></li>
-            <li><a href="page6.html">Open world games</a></li>
-        </ul>
-    <header>
-        <h1>Welcome to the World of Games</h1>
-        <p>Explore, play, and immerse yourself in the gaming universe</p>
-    </header>
-    <div class="container">
-        <h2>About Us</h2>
-        <p>We are passionate about gaming and dedicated to bringing you the latest news, reviews, and information about your favorite games and gaming platforms.</p>
+    <canvas id="simCanvas" width="450" height="450"></canvas>
+    <br>
+    <label for="immuneCount">Aantal immune personen:</label>
+    <br>
+    <input type="number" id="immuneCount" value="80">
+    <br>
+    <label for="infectionRate">Besmettingskans: <span id="infectionRateValue">40%</span></label>
+    <input type="range" id="infectionRate" min="0" max="100" step="1" value="40">
+    <br>
+    <button id="nextDayButton">Volgende dag</button>
+    <button id="restartButton">Herstart simulatie</button>
+    <br>    
+    <div id="infectionText" style="width: 150px; float:left;"></div>
+    <div id="infectionText2" style="width: 50px; float:left;"></div>
+    <div id="totalInfectionsText" style="width: 250px; float:left;"></div>
+
+    
+    
+
+    <script>
+        const canvas = document.getElementById("simCanvas");
+        const ctx = canvas.getContext("2d");
+        const rowCount = 50;
+        const colCount = 50;
+        const totalBalls = rowCount * colCount;
+        const initialInfectedCount = 5;
+        const ballSize = 15;
+        const immuneBalls = new Set();
+        const infectionData = [];
+
+        let balls = new Array(totalBalls).fill(false);
+        let infectionRate = 40;
+
+        function placeImmuneBalls(immuneCount) {
+            immuneBalls.clear();
+            while (immuneBalls.size < immuneCount) {
+                const immuneBall = Math.floor(Math.random() * totalBalls);
+                immuneBalls.add(immuneBall);
+            }
+        }
+
+        function setInitialInfectedBalls() {
+            const initialInfectedBalls = [];
+            for (let i = 0; i < initialInfectedCount; i++) {
+                let ball;
+                do {
+                    ball = Math.floor(Math.random() * totalBalls);
+                } while (initialInfectedBalls.includes(ball));
+                initialInfectedBalls.push(ball);
+                balls[ball] = true;
+            }
+        }
+
+        function spreadEpidemic() {
+            const newBalls = balls.slice();
+            infectionData.push(0);
+            for (let i = 0; i < totalBalls; i++) {
+                if (!balls[i] || immuneBalls.has(i)) continue;
+                const x = i % rowCount;
+                const y = Math.floor(i / colCount);
+                const neighbors = [];
+
+                if (x > 0) neighbors.push(i - 1);
+                if (x < rowCount - 1) neighbors.push(i + 1);
+                if (y > 0) neighbors.push(i - rowCount);
+                if (y < colCount - 1) neighbors.push(i + rowCount);
+
+                for (const neighbor of neighbors) {
+                    if (!immuneBalls.has(neighbor) && !balls[neighbor]) {
+                        if (Math.random() < infectionRate / 100) {
+                            newBalls[neighbor] = true;
+                            infectionData[infectionData.length - 1]++;
+                        }
+                    }
+                }
+            }
+            balls = newBalls;
+        }
+
+        function updateInfectionRate(value) {
+            infectionRate = parseInt(value);
+            document.getElementById("infectionRateValue").textContent = infectionRate + "%";
+        }
+
+        function updateInfectionText() {
+                const infectionText = document.getElementById("infectionText");
+            infectionText.innerHTML = "Besmettingen per dag:<br>";
+            infectionData.forEach((infections, day) => {
+                infectionText.innerHTML += `Dag ${day + 1}: <br>`;
+                     });
+        }
+     
+        function updateInfectionText2() {
+            const infectionText2 = document.getElementById("infectionText2");
+            infectionText2.innerHTML = "<br>";
+                infectionData.forEach((infections, day) => {
+                infectionText2.innerHTML += ` ${infections} <br>`;
+           });
+        }
+
         
-        <h2>Featured Games</h2>
-        <ul class="game-list">
-            <strong>Red Dead Redemption 2:</strong> Explore the Wild West in this epic open-world adventure.
-            <strong>The Legend of Zelda: Breath of the Wild:</strong> Embark on a breathtaking journey through the land of Hyrule.
-            <strong>Overwatch:</strong> Team up with heroes and engage in thrilling team-based battles.
-            <strong>The Witcher 3: Wild Hunt:</strong> Dive into a fantasy world filled with monsters, magic, and rich storytelling.
-        </ul>
         
-        <h2>Contact Us</h2>
-        <p>If you have any questions or feedback, feel free to <a href="mailto:contact@example.com">contact us</a>.</p>
-    </div>
+               function updateTotalInfectionsText() {
+            const totalInfectionsText = document.getElementById("totalInfectionsText");
+            const totalInfections = infectionData.reduce((sum, infections) => sum + infections, 0);
+            totalInfectionsText.innerHTML = `Totaal aantal besmettingen: ${totalInfections}`;
+        }
+
+        function nextDay() {
+            spreadEpidemic();
+            drawSimulation();
+            updateInfectionText();
+            updateInfectionText2();
+            updateTotalInfectionsText(); // Voeg deze regel toe
+        }
+        
+       
+        function drawSimulation() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < totalBalls; i++) {
+                const x = i % rowCount;
+                const y = Math.floor(i / colCount);
+                ctx.beginPath();
+                ctx.arc(x * ballSize + ballSize / 2, y * ballSize + ballSize / 2, ballSize / 2, 0, Math.PI * 2);
+                if (immuneBalls.has(i)) {
+                    ctx.fillStyle = "green";
+                } else if (balls[i]) {
+                    ctx.fillStyle = "red";
+                } else {
+                    ctx.fillStyle = "#74B6E4";
+                }
+                ctx.fill();
+                ctx.closePath();
+            }
+        }
+
+
+
+        function restartSimulation() {
+            balls = new Array(totalBalls).fill(false);
+            infectionData.length = 0;
+            setInitialInfectedBalls();
+            placeImmuneBalls(parseInt(document.getElementById("immuneCount").value));
+            drawSimulation();
+            updateInfectionText();
+            updateInfectionText2();
+            updateTotalInfectionsText(); 
+        }
+
+        document.getElementById("infectionRate").addEventListener("input", (event) => {
+            updateInfectionRate(event.target.value);
+        });
+
+        document.getElementById("nextDayButton").addEventListener("click", nextDay);
+        document.getElementById("restartButton").addEventListener("click", restartSimulation);
+
+        setInitialInfectedBalls();
+        placeImmuneBalls(parseInt(document.getElementById("immuneCount").value));
+        drawSimulation();
+        updateInfectionText();
+        updateInfectionText2();
+    </script>
 </body>
 </html>
