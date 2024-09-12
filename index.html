@@ -15,15 +15,27 @@
         .grote-tekst {
             font-size: 18px; 
     </style>
-    <ul> <!--balk met link naar elke pagina-->
-      <li><a href="index.html">Homepage</a></li>
-      <li><a href="htmlcode/Algemene-informatie.html">Algemene informatie</a></li>
-      <li><a href="htmlcode/binairstelsel.html">Binair stelsel</a></li>
-      <li><a href="htmlcode/bestandsformaten.html">Bestandsformaten</a></li>
-      <li><a href="htmlcode/kleurmodellen.html">Kleurmodellen</a></li>
-      <li><a href="htmlcode/compressie.html">Compressie</a></li>
-    </ul>
-    
+    <ul class="top-level-menu">
+    <li><a href="index.html">Startpagina</a></li>
+    <li><a href="bestandsformaten.html">Bestandsformaten</a></li>
+    <li>
+        <a href="compressie.html">Compressie</a>
+        <ul class="second-level-menu">
+            <li><a href="Algemene-informatie.html">Algemene informatie</a></li>
+            <li><a href="kleurmodellen.html">Kleurmodellen</a></li>
+            <li>
+                <a href="index.html">Startpagina</a>
+                <ul class="third-level-menu">
+                    <li><a href="binairstelsel.html">Binairstelsel</a></li>
+                    <li><a href="binairstelsel.html">Binairstelsel</a></li>
+                    <li><a href="bestandsformaten.html">Bestandsformaten</a></li>
+                    <li><a href="compressie.html">Compressie</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Seattle</a></li>
+        </ul>
+    </li>
+    <li><a href="#">Contact</a></li>
     <h1>Mijn reis door een website coderen</h1>
     <p class="grote-tekst">
       Hallo, mijn naam is Kevin Ruitenberg, en ik zit in havo 4 op het Vlietland College. Hier ga ik vertellen over mijn
